@@ -14,7 +14,7 @@ namespace LiveTalkOpenAISummarizeSample.Models
 {
     internal class SummarizeModel : INotifyPropertyChanged
     {
-        private const string UrlString = "https://{0}.openai.azure.com/{1}";
+        private const string UrlString = "https://{0}.openai.azure.com/openai/deployments/{1}/completions?api-version={2}";
         private HttpClient SendClient = null;
         private long LineCount = 0;
         private string Resource;
@@ -195,7 +195,7 @@ namespace LiveTalkOpenAISummarizeSample.Models
                     using (var request = new HttpRequestMessage())
                     {
                         request.Method = HttpMethod.Post;
-                        request.RequestUri = new Uri(string.Format(UrlString, this.Resource, $"openai/deployments/{deploymentName}/completions?api-version={version}"));
+                        request.RequestUri = new Uri(string.Format(UrlString, this.Resource, deploymentName, version));
                         request.Content = new StringContent(requestBody, Encoding.UTF8, "application/json");
                         request.Headers.Add("api-key", AccessKey);
 
@@ -261,13 +261,13 @@ namespace LiveTalkOpenAISummarizeSample.Models
             [DataMember]
             public string model { get; set; }
             [DataMember]
-            public Choice[] choices { get; set; }
+            public TChoice[] choices { get; set; }
             [DataMember]
-            public Usage usage { get; set; }
+            public TUsage usage { get; set; }
         }
 
         [DataContract]
-        public class Usage
+        public class TUsage
         {
             [DataMember]
             public int completion_tokens { get; set; }
@@ -278,7 +278,7 @@ namespace LiveTalkOpenAISummarizeSample.Models
         }
 
         [DataContract]
-        public class Choice
+        public class TChoice
         {
             [DataMember]
             public string text { get; set; }
