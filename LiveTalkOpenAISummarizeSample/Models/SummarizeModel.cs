@@ -14,7 +14,7 @@ namespace LiveTalkOpenAISummarizeSample.Models
 {
     internal class SummarizeModel : INotifyPropertyChanged
     {
-        private const string UrlString = "https://{0}.openai.azure.com/openai/deployments/{1}/completions?api-version={2}";
+        private const string UrlString = "https://{0}.openai.azure.com/openai/deployments/{1}/chat/completions?api-version={2}";
         private HttpClient SendClient = null;
         private long LineCount = 0;
         private string Resource;
@@ -159,16 +159,27 @@ namespace LiveTalkOpenAISummarizeSample.Models
         {
             var summarizeText = string.Empty;
             var version = "2023-05-15";
-            var deploymentName = "text-davinci-003";
+            var deploymentName = "gpt-35-turbo";
             var body = new TRequest()
             {
-                prompt = $"{Prompt}\n\n{inputData}",
+                messages = new TMessage[]
+                {
+                    new TMessage()
+                    {
+                        role = "system",
+                        content = this.Prompt,
+                    },
+                    new TMessage()
+                    {
+                        role = "user",
+                        content = inputData,
+                    },
+                },
                 temperature = (float)0.3,       // Temperature
                 max_tokens = 250,               // MaxTokens
                 top_p = (float)1,               // NucleusSamplingFactor
                 frequency_penalty = (float)0,   // FrequencyPenalty
                 presence_penalty = (float)0,    // PresencePenalty
-                best_of = (float)1,             // GenerationSampleCount
             };
 
             try
@@ -212,7 +223,7 @@ namespace LiveTalkOpenAISummarizeSample.Models
                                     {
                                         foreach (var choice in completionsResponse.choices)
                                         {
-                                            summarizeText += choice.text + Environment.NewLine;
+                                            summarizeText += choice.message.content + Environment.NewLine;
                                         }
                                     }
                                 }
@@ -234,7 +245,7 @@ namespace LiveTalkOpenAISummarizeSample.Models
         public class TRequest
         {
             [DataMember]
-            public string prompt { get; set; }
+            public TMessage[] messages { get; set; }
             [DataMember]
             public int max_tokens { get; set; }
             [DataMember]
@@ -245,12 +256,20 @@ namespace LiveTalkOpenAISummarizeSample.Models
             public float presence_penalty { get; set; }
             [DataMember]
             public float top_p { get; set; }
+        }
+
+        [DataContract]
+        public class TMessage
+        {
             [DataMember]
-            public float? best_of { get; set; }     // 
+            public string role { get; set; }
+            [DataMember]
+            public string content { get; set; }
         }
         #endregion
 
         #region "TResult"
+
         [DataContract]
         public class TResult
         {
@@ -281,13 +300,11 @@ namespace LiveTalkOpenAISummarizeSample.Models
         public class TChoice
         {
             [DataMember]
-            public string text { get; set; }
+            public TMessage message { get; set; }
             [DataMember]
             public int index { get; set; }
             [DataMember]
             public string finish_reason { get; set; }
-            [DataMember]
-            public object logprobs { get; set; }
         }
         #endregion
 
