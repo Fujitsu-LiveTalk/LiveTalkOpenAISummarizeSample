@@ -28,7 +28,7 @@ GPT-3.5 モデル以降は、呼び出しの JSON 形式などが変わります
 
    1. 指定されたファイル名から発言内容を取り出します。
    2. JSON形式でリクエスト本文を作成します。
-   3. 作成したリクエスト本文を https://{0}.openai.azure.com/openai/deployments/gpt-35-turbo/chat/completions?api-version=2023-05-15 に http-Post します。「{0}」には App.Config に指定した「エンドポイント」を設定します。
+   3. 作成したリクエスト本文を https://{0}.openai.azure.com/openai/deployments/{1}/chat/completions?api-version=2023-05-15 に http-Post します。「{0}」には App.Config に指定した「APIResourceName」を設定します。「{1}」には画面で指定した「モデル名」を設定します。
    4. POST した結果として、completionsResponse の choices の内容を返却された要素数分だけ連結して「結果」とします。
 
 3. 取得した「結果」を [結果] 欄に表示します。この表示欄の内容を選択してクリップボードにコピーできるます。

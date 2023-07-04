@@ -17,8 +17,8 @@ namespace LiveTalkOpenAISummarizeSample.Models
         private const string UrlString = "https://{0}.openai.azure.com/openai/deployments/{1}/chat/completions?api-version={2}";
         private HttpClient SendClient = null;
         private long LineCount = 0;
-        private string Resource;
-        private string AccessKey;
+        private string Resource = string.Empty;
+        private string AccessKey = string.Empty;
 
         /// <summary>
         /// 連携ファイル名
@@ -34,6 +34,24 @@ namespace LiveTalkOpenAISummarizeSample.Models
                     this._FileName = value;
                     OnPropertyChanged();
                     Common.Config.SetConfig("FileName", value);
+                }
+            }
+        }
+
+        /// <summary>
+        /// DeploymentName
+        /// </summary>
+        private string _DeploymentName = Common.Config.GetConfig("DeploymentName");
+        public string DeploymentName
+        {
+            get { return this._DeploymentName; }
+            internal set
+            {
+                if (this._DeploymentName != value)
+                {
+                    this._DeploymentName = value;
+                    OnPropertyChanged();
+                    Common.Config.SetConfig("DeploymentName", value);
                 }
             }
         }
@@ -159,7 +177,6 @@ namespace LiveTalkOpenAISummarizeSample.Models
         {
             var summarizeText = string.Empty;
             var version = "2023-05-15";
-            var deploymentName = "gpt-35-turbo";
             var body = new TRequest()
             {
                 messages = new TMessage[]
@@ -206,7 +223,7 @@ namespace LiveTalkOpenAISummarizeSample.Models
                     using (var request = new HttpRequestMessage())
                     {
                         request.Method = HttpMethod.Post;
-                        request.RequestUri = new Uri(string.Format(UrlString, this.Resource, deploymentName, version));
+                        request.RequestUri = new Uri(string.Format(UrlString, this.Resource, this.DeploymentName, version));
                         request.Content = new StringContent(requestBody, Encoding.UTF8, "application/json");
                         request.Headers.Add("api-key", AccessKey);
 

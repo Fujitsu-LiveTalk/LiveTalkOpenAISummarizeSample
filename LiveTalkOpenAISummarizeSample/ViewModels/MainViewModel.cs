@@ -24,6 +24,8 @@ namespace LiveTalkOpenAISummarizeSample.ViewModels
         public ReactiveProperty<string> FileName { get; }
         [Required]       // 必須チェック
         public ReactiveProperty<string> Prompt { get; }
+        [Required]       // 必須チェック
+        public ReactiveProperty<string> DeploymentName { get; }
         public ReactiveProperty<string> Message { get; }
         public ReactiveProperty<string> Result { get; }
         public ReactiveProperty<bool> IsBusy { get; } = new ReactiveProperty<bool>(false);
@@ -45,6 +47,9 @@ namespace LiveTalkOpenAISummarizeSample.ViewModels
             this.FileName = this.Model.ToReactivePropertyAsSynchronized((x) => x.FileName)
                 .SetValidateAttribute(() => this.FileName)
                 .AddTo(this.Disposable);
+            this.DeploymentName = this.Model.ToReactivePropertyAsSynchronized((x) => x.DeploymentName)
+                .SetValidateAttribute(() => this.DeploymentName)
+                .AddTo(this.Disposable);
             this.Prompt = this.Model.ToReactivePropertyAsSynchronized((x) => x.Prompt)
                 .SetValidateAttribute(() => this.Prompt)
                 .AddTo(this.Disposable);
@@ -57,6 +62,7 @@ namespace LiveTalkOpenAISummarizeSample.ViewModels
             this.IsCanStart = new[]
             {
                 this.FileName.ObserveHasErrors,
+                this.DeploymentName.ObserveHasErrors,
                 this.Prompt.ObserveHasErrors,
                 this.IsStarted,
             }.CombineLatestValuesAreAllFalse()

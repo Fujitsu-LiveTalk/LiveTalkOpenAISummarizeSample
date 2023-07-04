@@ -29,6 +29,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
@@ -36,16 +37,19 @@
             <Label Grid.Row="0" Grid.Column="0"  Content="連携ファイル" VerticalAlignment="Center" />
             <TextBox Grid.Row="0" Grid.Column="2" Margin="4,4,2,4" Text="{Binding FileName.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="34" VerticalAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="{Binding IsStarted.Value}" />
 
-            <Label Grid.Row="1" Grid.Column="0"  Content="prompt" VerticalAlignment="Center" />
-            <TextBox Grid.Row="1" Grid.Column="2" Margin="4,4,2,4" Text="{Binding Prompt.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="34" VerticalAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="{Binding IsStarted.Value}" />
+            <Label Grid.Row="1" Grid.Column="0"  Content="モデル" VerticalAlignment="Center" />
+            <TextBox Grid.Row="1" Grid.Column="2" Margin="4,4,2,4" Text="{Binding DeploymentName.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="34" VerticalAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="{Binding IsStarted.Value}" />
 
-            <Label Grid.Row="2" Grid.Column="0"  Margin="0,8,0,0" Content="結果" VerticalAlignment="Top" />
-            <TextBox Grid.Row="2" Grid.Column="1" Margin="4,4,2,0" Text="{Binding Result.Value, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+            <Label Grid.Row="2" Grid.Column="0"  Content="プロンプト" VerticalAlignment="Center" />
+            <TextBox Grid.Row="2" Grid.Column="2" Margin="4,4,2,4" Text="{Binding Prompt.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="34" VerticalAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="{Binding IsStarted.Value}" />
+
+            <Label Grid.Row="3" Grid.Column="0"  Margin="0,8,0,0" Content="結果" VerticalAlignment="Top" />
+            <TextBox Grid.Row="3" Grid.Column="1" Margin="4,4,2,0" Text="{Binding Result.Value, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                      HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MinHeight="34"
                      IsReadOnly="True" TextWrapping="Wrap" AcceptsReturn="True" VerticalContentAlignment="Top"
                      ScrollViewer.VerticalScrollBarVisibility="Auto" />
 
-            <StackPanel Grid.Row="3" Grid.Column="2" Margin="4,2,4,4" Orientation="Horizontal" HorizontalAlignment="Right" >
+            <StackPanel Grid.Row="4" Grid.Column="2" Margin="4,2,4,4" Orientation="Horizontal" HorizontalAlignment="Right" >
                 <Button Content="Start" FontSize="14" Width="88" Height="27" Command="{Binding StartCommand}" IsEnabled="{Binding IsCanStart.Value}"/>
             </StackPanel>
         </Grid>
