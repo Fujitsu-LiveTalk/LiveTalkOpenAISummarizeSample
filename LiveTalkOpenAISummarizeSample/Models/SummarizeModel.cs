@@ -16,9 +16,6 @@ namespace LiveTalkOpenAISummarizeSample.Models
     {
         private const string UrlString = "https://{0}.openai.azure.com/openai/deployments/{1}/chat/completions?api-version={2}";
         private HttpClient SendClient = null;
-        private long LineCount = 0;
-        private string Resource = string.Empty;
-        private string AccessKey = string.Empty;
 
         /// <summary>
         /// 連携ファイル名
@@ -75,6 +72,42 @@ namespace LiveTalkOpenAISummarizeSample.Models
         }
 
         /// <summary>
+        /// APIResourceName
+        /// </summary>
+        private string _APIResourceName = Common.Config.GetConfig("APIResourceName");
+        public string APIResourceName
+        {
+            get { return this._APIResourceName; }
+            internal set
+            {
+                if (this._APIResourceName != value)
+                {
+                    this._APIResourceName = value;
+                    OnPropertyChanged();
+                    Common.Config.SetConfig("APIResourceName", value);
+                }
+            }
+        }
+
+        /// <summary>
+        /// APIKey
+        /// </summary>
+        private string _APIKey = Common.Config.GetConfig("APIKey");
+        public string APIKey
+        {
+            get { return this._APIKey; }
+            internal set
+            {
+                if (this._APIKey != value)
+                {
+                    this._APIKey = value;
+                    OnPropertyChanged();
+                    Common.Config.SetConfig("APIKey", value);
+                }
+            }
+        }
+
+        /// <summary>
         /// 処理中メッセージ
         /// </summary>
         private string _Message = string.Empty;
@@ -110,8 +143,6 @@ namespace LiveTalkOpenAISummarizeSample.Models
 
         public SummarizeModel()
         {
-            this.Resource = Common.Config.GetConfig("APIResourceName");
-            this.AccessKey = Common.Config.GetConfig("APIKey");
         }
 
         internal async Task Convert()
@@ -120,6 +151,12 @@ namespace LiveTalkOpenAISummarizeSample.Models
 
             try
             {
+                this.FileName = Common.Config.GetConfig("FileName");
+                this.DeploymentName = Common.Config.GetConfig("DeploymentName");
+                this.APIResourceName = Common.Config.GetConfig("APIResourceName");
+                this.APIKey = Common.Config.GetConfig("APIKey");
+                this.Result = string.Empty;
+
                 // ファイルからの入力は非同期に実施する
                 await Task.Run(async () =>
                 {
@@ -192,9 +229,9 @@ namespace LiveTalkOpenAISummarizeSample.Models
                         content = inputData,
                     },
                 },
-                temperature = (float)0.3,       // Temperature
-                max_tokens = 250,               // MaxTokens
-                top_p = (float)1,               // NucleusSamplingFactor
+                temperature = (float)0.3,       // Temperature(出力の多様性を30%に指定)
+                max_tokens = 1000,              // MaxTokens(生成されるレスポンスのトークンの最大数)
+                top_p = (float)1,               // NucleusSamplingFactor(上位１00%の結果を利用)
                 frequency_penalty = (float)0,   // FrequencyPenalty
                 presence_penalty = (float)0,    // PresencePenalty
             };
@@ -223,9 +260,9 @@ namespace LiveTalkOpenAISummarizeSample.Models
                     using (var request = new HttpRequestMessage())
                     {
                         request.Method = HttpMethod.Post;
-                        request.RequestUri = new Uri(string.Format(UrlString, this.Resource, this.DeploymentName, version));
+                        request.RequestUri = new Uri(string.Format(UrlString, this.APIResourceName, this.DeploymentName, version));
                         request.Content = new StringContent(requestBody, Encoding.UTF8, "application/json");
-                        request.Headers.Add("api-key", AccessKey);
+                        request.Headers.Add("api-key", this.APIKey);
 
                         using (var response = await this.SendClient.SendAsync(request))
                         {

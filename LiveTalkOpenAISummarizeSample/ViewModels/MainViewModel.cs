@@ -4,6 +4,7 @@
  * 概要      ：MainViewModel
 */
 
+using LiveTalkOpenAISummarizeSample.Common;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using System;
@@ -24,8 +25,7 @@ namespace LiveTalkOpenAISummarizeSample.ViewModels
         public ReactiveProperty<string> FileName { get; }
         [Required]       // 必須チェック
         public ReactiveProperty<string> Prompt { get; }
-        [Required]       // 必須チェック
-        public ReactiveProperty<string> DeploymentName { get; }
+
         public ReactiveProperty<string> Message { get; }
         public ReactiveProperty<string> Result { get; }
         public ReactiveProperty<bool> IsBusy { get; } = new ReactiveProperty<bool>(false);
@@ -47,9 +47,6 @@ namespace LiveTalkOpenAISummarizeSample.ViewModels
             this.FileName = this.Model.ToReactivePropertyAsSynchronized((x) => x.FileName)
                 .SetValidateAttribute(() => this.FileName)
                 .AddTo(this.Disposable);
-            this.DeploymentName = this.Model.ToReactivePropertyAsSynchronized((x) => x.DeploymentName)
-                .SetValidateAttribute(() => this.DeploymentName)
-                .AddTo(this.Disposable);
             this.Prompt = this.Model.ToReactivePropertyAsSynchronized((x) => x.Prompt)
                 .SetValidateAttribute(() => this.Prompt)
                 .AddTo(this.Disposable);
@@ -62,7 +59,6 @@ namespace LiveTalkOpenAISummarizeSample.ViewModels
             this.IsCanStart = new[]
             {
                 this.FileName.ObserveHasErrors,
-                this.DeploymentName.ObserveHasErrors,
                 this.Prompt.ObserveHasErrors,
                 this.IsStarted,
             }.CombineLatestValuesAreAllFalse()
@@ -74,21 +70,24 @@ namespace LiveTalkOpenAISummarizeSample.ViewModels
                 .ToReactiveCommand()
                 .WithSubscribe(() => this.FileInput())
                 .AddTo(this.Disposable);
-            this.StartCommand = this.IsCanStart
+            this.SettingCommand = this.IsStarted.Inverse()
                 .ToReactiveCommand()
-                .WithSubscribe(async () => await this.Start())
+                .WithSubscribe(() => this.Setting())
                 .AddTo(this.Disposable);
             this.ExitCommand.Subscribe((x) =>
             {
                 OnClosed();
             }).AddTo(this.Disposable);
+            this.StartCommand = this.IsCanStart
+                .ToReactiveCommand()
+                .WithSubscribe(async () => await this.Start())
+                .AddTo(this.Disposable);
 
             // エラーハンドリング
             this.Model.Threw += (s, e) =>
             {
                 MessageBox.Show(e.GetException().Message, "LiveTalk SummarizeText Sample", MessageBoxButton.OK, MessageBoxImage.Warning);
             };
-
         }
 
         /// <summary>
@@ -131,6 +130,23 @@ namespace LiveTalkOpenAISummarizeSample.ViewModels
         }
 
         /// <summary>
+        /// 設定画面表示
+        /// </summary>
+        public ReactiveCommand SettingCommand { get; }
+        private void Setting()
+        {
+            // 初期画面遷移
+            this.OnMessaged("SettingWindow");
+        }
+        internal void InitialSetting()
+        {
+            if (string.IsNullOrEmpty(this.Model.DeploymentName) || string.IsNullOrEmpty(this.Model.APIResourceName) || string.IsNullOrEmpty(this.Model.APIKey))
+            {
+                this.Setting();
+            }
+        }
+
+        /// <summary>
         /// 要約
         /// </summary>
         public ReactiveCommand StartCommand { get; } = new ReactiveCommand();
@@ -151,6 +167,15 @@ namespace LiveTalkOpenAISummarizeSample.ViewModels
                 this.IsStarted.Value = false;
                 this.IsBusy.Value = false;
             }
+        }
+
+        /// <summary>
+        /// ダイアログ表示用イベント
+        /// </summary>
+        internal event MessagedEventHandler Messaged;
+        internal virtual void OnMessaged(String message = "")
+        {
+            this.Messaged?.Invoke(this, new MessageEventArgs(message));
         }
 
         /// <summary>

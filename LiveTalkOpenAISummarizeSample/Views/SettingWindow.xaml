@@ -1,0 +1,50 @@
+﻿<Window x:Class="LiveTalkOpenAISummarizeSample.Views.SettingWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LiveTalkOpenAISummarizeSample.Views"
+        mc:Ignorable="d"
+        Title="LiveTalkOpenAISummarizeSample - Setting"
+        Width="440"
+        Background="#FFD5D5D5" 
+        SizeToContent="Height"
+        WindowStartupLocation="CenterOwner"
+        DataContext="{Binding ViewModel, RelativeSource={RelativeSource Mode=Self}}" WindowStyle="ToolWindow" MinHeight="200" MaxHeight="1000">
+
+    <Grid Grid.Row="0" Margin="8">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Label Grid.Row="0" Grid.Column="0"  Content="モデル" VerticalAlignment="Center" />
+        <TextBox Grid.Row="0" Grid.Column="2" Margin="4,4,2,4" Text="{Binding DeploymentName.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="34" VerticalAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="{Binding IsStarted.Value}" />
+
+        <Label Grid.Row="1" Grid.Column="0"  Content="エンドポイント" VerticalAlignment="Center" />
+        <Grid Grid.Row="1" Grid.Column="2" Margin="4,4,2,4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Label Grid.Column="0" Content="https://" VerticalAlignment="Center" />
+            <TextBox Grid.Column="1" Text="{Binding APIResourceName.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="34" VerticalAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="{Binding IsStarted.Value}" />
+            <Label Grid.Column="2" Content=".openai.azure.com/" VerticalAlignment="Center" />
+        </Grid>
+
+        <Label Grid.Row="2" Grid.Column="0"  Content="キー" VerticalAlignment="Center" />
+        <TextBox Grid.Row="2" Grid.Column="2" Margin="4,4,2,4" Text="{Binding APIKey.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="34" VerticalAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="{Binding IsStarted.Value}" />
+
+        <StackPanel Grid.Row="4" Grid.Column="2" Margin="4,12,4,4" Orientation="Horizontal" HorizontalAlignment="Right" >
+            <Button Content="Close" FontSize="14" Width="88" Height="27" Margin="8,0,0,0" Command="{Binding ExitCommand}" IsEnabled="{Binding IsCanStart.Value}"/>
+        </StackPanel>
+    </Grid>
+</Window>

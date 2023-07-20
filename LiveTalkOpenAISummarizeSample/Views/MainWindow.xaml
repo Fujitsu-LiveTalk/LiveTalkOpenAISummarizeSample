@@ -11,23 +11,18 @@
         DataContext="{Binding ViewModel, RelativeSource={RelativeSource Mode=Self}}" WindowStyle="ToolWindow" MinHeight="200" MaxHeight="1000">
 
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="341*"/>
-            <ColumnDefinition Width="199*"/>
-        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="1" Background="#FFD5D5D5" Grid.ColumnSpan="2" Margin="0,0,0,24" Grid.RowSpan="2">
+        <Grid Grid.Row="1" Background="#FFD5D5D5" Margin="0,0,0,24" Grid.RowSpan="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="110" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
@@ -37,19 +32,19 @@
             <Label Grid.Row="0" Grid.Column="0"  Content="連携ファイル" VerticalAlignment="Center" />
             <TextBox Grid.Row="0" Grid.Column="2" Margin="4,4,2,4" Text="{Binding FileName.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="34" VerticalAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="{Binding IsStarted.Value}" />
 
-            <Label Grid.Row="1" Grid.Column="0"  Content="モデル" VerticalAlignment="Center" />
-            <TextBox Grid.Row="1" Grid.Column="2" Margin="4,4,2,4" Text="{Binding DeploymentName.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="34" VerticalAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="{Binding IsStarted.Value}" />
+            <Label Grid.Row="1" Grid.Column="0"  Content="プロンプト" VerticalAlignment="Center" />
+            <TextBox Grid.Row="1" Grid.Column="2" Margin="4,4,2,4" Text="{Binding Prompt.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                     HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MinHeight="34"
+                     IsReadOnly="{Binding IsStarted.Value}" TextWrapping="Wrap" AcceptsReturn="True" VerticalContentAlignment="Top"
+                     ScrollViewer.VerticalScrollBarVisibility="Auto" />
 
-            <Label Grid.Row="2" Grid.Column="0"  Content="プロンプト" VerticalAlignment="Center" />
-            <TextBox Grid.Row="2" Grid.Column="2" Margin="4,4,2,4" Text="{Binding Prompt.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="34" VerticalAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="{Binding IsStarted.Value}" />
-
-            <Label Grid.Row="3" Grid.Column="0"  Margin="0,8,0,0" Content="結果" VerticalAlignment="Top" />
-            <TextBox Grid.Row="3" Grid.Column="1" Margin="4,4,2,0" Text="{Binding Result.Value, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+            <Label Grid.Row="2" Grid.Column="0"  Margin="0,8,0,0" Content="結果" VerticalAlignment="Top" />
+            <TextBox Grid.Row="2" Grid.Column="1" Margin="4,4,2,0" Text="{Binding Result.Value, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                      HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MinHeight="34"
                      IsReadOnly="True" TextWrapping="Wrap" AcceptsReturn="True" VerticalContentAlignment="Top"
                      ScrollViewer.VerticalScrollBarVisibility="Auto" />
 
-            <StackPanel Grid.Row="4" Grid.Column="2" Margin="4,2,4,4" Orientation="Horizontal" HorizontalAlignment="Right" >
+            <StackPanel Grid.Row="3" Grid.Column="2" Margin="4,2,4,4" Orientation="Horizontal" HorizontalAlignment="Right" >
                 <Button Content="Start" FontSize="14" Width="88" Height="27" Command="{Binding StartCommand}" IsEnabled="{Binding IsCanStart.Value}"/>
             </StackPanel>
         </Grid>
@@ -59,12 +54,14 @@
                 <MenuItem Header="ファイル(_F)">
                     <MenuItem Command="{Binding FileOpenCommand}" Header="開く(_O)..." ToolTip="{Binding FileName.Value}" />
                     <Separator />
+                    <MenuItem Command="{Binding SettingCommand}" Header="設定(_S)..." />
+                    <Separator />
                     <MenuItem Command="{Binding ExitCommand}" Header="終了(_X)" />
                 </MenuItem>
             </Menu>
         </Grid>
 
-        <StackPanel Grid.Row="2" Background="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" Grid.ColumnSpan="2">
+        <StackPanel Grid.Row="2" Background="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}">
             <Label Content="{Binding Message.Value}" Height="24" Margin="4,0,4,0" VerticalContentAlignment="Center" />
         </StackPanel>
     </Grid>
