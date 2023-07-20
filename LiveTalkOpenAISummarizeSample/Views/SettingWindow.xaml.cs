@@ -13,6 +13,12 @@ namespace LiveTalkOpenAISummarizeSample.Views
         public SettingWindow()
         {
             InitializeComponent();
+
+            // 設定画面クローズイベント
+            this.ViewModel.Closed += (s, args) =>
+            {
+                this.Close();
+            };
         }
     }
 }
